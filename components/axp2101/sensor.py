@@ -1,5 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
+from esphome.core import CORE
 from esphome.components import binary_sensor, i2c, sensor
 from esphome.const import (
     CONF_BATTERY_LEVEL,
@@ -57,6 +58,8 @@ CONFIG_SCHEMA = (
 
 
 def to_code(config):
+    if CORE.is_esp32 and CORE.using_arduino:
+        cg.add_library("Wire", None)
     var = cg.new_Pvariable(config[CONF_ID])
     yield cg.register_component(var, config)
     yield i2c.register_i2c_device(var, config)
